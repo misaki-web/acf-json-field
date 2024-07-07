@@ -1,0 +1,28 @@
+.acf-json-field-output {
+	padding: 10px;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	background-color: #f7f7f7;
+	font-size: 0.9em;
+	font-family: monospace;
+}
+
+.acf-json-field-boolean {
+	color: #ff08ff;
+}
+
+.acf-json-field-key {
+	color: #2c54ad;
+}
+
+.acf-json-field-null {
+	color: #ff08ff;
+}
+
+.acf-json-field-number {
+	color: #388858;
+}
+
+.acf-json-field-string {
+	color: #a32f77;
+}
