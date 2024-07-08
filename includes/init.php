@@ -19,16 +19,3 @@ add_action('init', function () {
 
 	acf_register_field_type(__NAMESPACE__ . '\\acf_field_json');
 });
-
-/**
- * Include the plugin update checker.
- */
-
-require_once __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
-
-$update_checker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-	'https://github.com/misaki-web/acf-json-field',
-	__FILE__,
-	'acf-json-field'
-);
-$update_checker->getVcsApi()->enableReleaseAssets();

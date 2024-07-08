@@ -25,6 +25,7 @@ define('ACF_JSON_FIELD_VERSION', '1.0.0');
 ################################################################################
 
 require_once(__DIR__ . '/includes/init.php');
+require_once(__DIR__ . '/includes/plugin-update-checker/plugin-update-checker.php');
 
 ################################################################################
 # @title Assets
@@ -59,6 +60,17 @@ add_action('wp_enqueue_scripts', function () {
 
 	wp_enqueue_style('acf-json-field-css', $url_dir . 'assets/css/ajf.css', [], ACF_JSON_FIELD_VERSION);
 });
+
+################################################################################
+# @title Update checker
+################################################################################
+
+$update_checker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+	'https://github.com/misaki-web/acf-json-field',
+	__FILE__,
+	'acf-json-field'
+);
+$update_checker->getVcsApi()->enableReleaseAssets();
 
 ################################################################################
 # @title Shortcode
