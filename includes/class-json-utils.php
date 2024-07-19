@@ -62,10 +62,25 @@ class JsonUtils {
 	public static function encode($php_data) {
 		$json_encoded = json_encode($php_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 		$json_encoded = preg_replace_callback('/^( {4,})/m', function ($matches) {
-			return str_replace('    ', '  ', $matches[1]);
+			return str_replace('    ', "\t", $matches[1]);
 		}, $json_encoded);
 
 		return $json_encoded;
+	}
+
+	/**
+	 * Generates HTML pre code from PHP value.
+	 *
+	 * @param mixed $php_data The PHP data to be encoded and highlighted.
+	 * @param string $additional_classes Optional additional classes for the <pre> tag.
+	 * @return string The HTML string with syntax highlighting.
+	 */
+	public static function generate_pre($php_data, $additional_classes = '') {
+		$json_encoded = self::encode($php_data);
+		$json_highlighted = self::add_html_tokens($json_encoded);
+		$classes = 'acf-json-field-output ' . $additional_classes;
+
+		return '<pre class="' . esc_attr(trim($classes)) . '">' . $json_highlighted . '</pre>';
 	}
 
 	/**
@@ -97,13 +112,11 @@ class JsonUtils {
 		$json_decoded = json_decode($raw_data, true);
 
 		if ($format === 'html') {
-			$json_encoded = self::encode($json_decoded);
-			$json_encoded = self::add_html_tokens($json_encoded);
-			$data = '<pre class="acf-json-field-output">' . $json_encoded . '</pre>';
+			$data = self::generate_pre($json_decoded);
 		} else if ($format === 'php') {
 			$data = $json_decoded;
 		}
-		
+
 		return $data;
 	}
 
@@ -120,17 +133,17 @@ class JsonUtils {
 	public static function set_json_field($field, $data, $id = null, $is_json_encoded = false, $add_slashes = false) {
 		$id = self::get_id($id);
 		$json_encoded = $is_json_encoded ? $data : self::encode($data);
-		
+
 		if ($add_slashes) {
 			$json_encoded = wp_slash($json_encoded);
 		}
-		
+
 		if (str_starts_with($id, 'user_')) {
 			$ret = update_user_meta(substr($id, 5), $field, $json_encoded);
 		} else {
 			$ret = update_post_meta($id, $field, $json_encoded);
 		}
-		
+
 		$success = !empty($ret);
 
 		return $success;

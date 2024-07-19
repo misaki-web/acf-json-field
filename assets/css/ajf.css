@@ -5,6 +5,9 @@
 	background-color: #f7f7f7;
 	font-size: 0.9em;
 	font-family: monospace;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	tab-size: 4;
 }
 
 .acf-json-field-boolean {
