@@ -51,27 +51,41 @@ class acf_field_json extends \acf_field {
 		acf_render_field_setting(
 			$field,
 			[
-				'name'         => 'editor_mode',
-				'label'        => __('Editor Mode', 'acf-json-field'),
-				'type'         => 'select',
-				'choices'      => [
-					'table'    => 'table',
-					'text' => 'text',
+				'name'          => 'editor_mode',
+				'label'         => __('Editor Mode', 'acf-json-field'),
+				'type'          => 'select',
+				'choices'       => [
+					'table' => 'table',
+					'text'  => 'text',
 					'tree'  => 'tree',
 				],
-				'required'     => false,
+				'required'      => false,
 				'default_value' => self::DEFAULT_EDITOR_MODE,
-				'hint'         => __('Select the editor mode ("tree" by default)', 'acf-json-field'),
+				'hint'          => sprintf(__('Select the editor mode ("%s" by default)', 'acf-json-field'), self::DEFAULT_EDITOR_MODE),
 			]
 		);
-
+		
 		acf_render_field_setting(
 			$field,
 			[
-				'label' => __('Default Value', 'acf-json-field'),
+				'name'          => 'editor_height',
+				'label'         => __('Editor Height', 'acf-json-field'),
+				'type'          => 'number',
+				'step'          => 1,
+				'min'           => 1,
+				'required'      => false,
+				'default_value' => '',
+				'hint'          => __('Editor height (px) different from the default height defined in the stylesheet', 'acf-json-field'),
+			]
+		);
+		
+		acf_render_field_setting(
+			$field,
+			[
+				'label' =>        __('Default Value', 'acf-json-field'),
 				'instructions' => __('Default JSON value if no value is entered by the user', 'acf-json-field'),
-				'type' => 'textarea',
-				'name' => 'default_value',
+				'type' =>         'textarea',
+				'name' =>         'default_value',
 			]
 		);
 	}
@@ -93,11 +107,25 @@ class acf_field_json extends \acf_field {
 
 		$editor_id = $textarea_id . '-editor';
 		$editor_mode = isset($field['editor_mode']) ? esc_attr($field['editor_mode']) : self::DEFAULT_EDITOR_MODE;
+		$style_attr = '';
+		$style = [];
+		
+		if (!empty($field['editor_height'])) {
+			$style['height'] = esc_attr($field['editor_height']) . 'px';
+		}
+		
+		if (!empty($style)) {
+			foreach ($style as $k => $v) {
+				$style_attr .= "$k: $v;";
+			}
+			
+			$style_attr = 'style="' . $style_attr . '"';
+		}
 
 		if ($textarea_id !== '' && $textarea_name !== '') {
 			echo <<<HTML
 				<textarea id="$textarea_id" class="acf-json-field-data" name="$textarea_name">$textarea_value</textarea>
-				<div id="$editor_id" class="acf-json-field-editor" data-editor-mode="$editor_mode"></div>
+				<div id="$editor_id" class="acf-json-field-editor" data-editor-mode="$editor_mode" {$style_attr}></div>
 			HTML;
 		}
 	}

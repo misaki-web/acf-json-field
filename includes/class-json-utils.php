@@ -44,7 +44,7 @@ class JsonUtils {
 	 * @return int|string The determined ID.
 	 */
 	private static function get_id($id) {
-		if ($id === 'user') {
+		if ($id === 'user' || $id === 'user_') {
 			$id = 'user_' . get_current_user_id();
 		} else if (empty($id) || $id === 'null' || $id === 'false') {
 			$id = get_the_ID();
@@ -61,6 +61,11 @@ class JsonUtils {
 	 */
 	public static function encode($php_data) {
 		$json_encoded = json_encode($php_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+		
+		if ($json_encoded === false) {
+			$json_encoded = '{}';
+		}
+		
 		$json_encoded = preg_replace_callback('/^( {4,})/m', function ($matches) {
 			return str_replace('    ', "\t", $matches[1]);
 		}, $json_encoded);
@@ -109,6 +114,11 @@ class JsonUtils {
 		$id = self::get_id($id);
 		$data = '';
 		$raw_data = get_field($field, $id);
+		
+		if (!is_string($raw_data)) {
+			$raw_data = '{}';
+		}
+		
 		$json_decoded = json_decode($raw_data, true);
 
 		if ($format === 'html') {
