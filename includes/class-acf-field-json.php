@@ -99,7 +99,13 @@ class acf_field_json extends \acf_field {
 	public function render_field($field) {
 		$textarea_id = isset($field['id']) ? esc_attr($field['id']) : '';
 		$textarea_name = isset($field['name']) ? esc_attr($field['name']) : '';
-		$textarea_value = isset($field['value']) ? esc_textarea($field['value']) : '';
+		$field_value = isset($field['value']) ? $field['value'] : '';
+		
+		if (!is_string($field_value)) {
+			$field_value = JsonUtils::encode($field_value);
+		}
+		
+		$textarea_value = esc_textarea($field_value);
 
 		if ($textarea_value === '' && isset($field['default_value'])) {
 			$textarea_value = esc_textarea($field['default_value']);
