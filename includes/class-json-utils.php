@@ -54,6 +54,22 @@ class JsonUtils {
 	}
 
 	/**
+	 * Decodes a JSON string into a PHP associative array.
+	 *
+	 * @param string $json_string The JSON string to decode.
+	 * @return array The decoded associative array. Returns an empty array if the input is not a valid JSON string.
+	 */
+	public static function decode($json_string) {
+		$json_decoded = json_decode($json_string, true);
+		
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			$json_decoded = [];
+		}
+		
+		return $json_decoded;
+	}
+
+	/**
 	 * Encodes PHP data to a JSON string with formatting options.
 	 *
 	 * @param mixed $php_data The PHP data to be encoded.
@@ -61,11 +77,11 @@ class JsonUtils {
 	 */
 	public static function encode($php_data) {
 		$json_encoded = json_encode($php_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-		
+
 		if ($json_encoded === false) {
 			$json_encoded = '{}';
 		}
-		
+
 		$json_encoded = preg_replace_callback('/^( {4,})/m', function ($matches) {
 			return str_replace('    ', "\t", $matches[1]);
 		}, $json_encoded);
@@ -114,12 +130,12 @@ class JsonUtils {
 		$id = self::get_id($id);
 		$data = '';
 		$raw_data = get_field($field, $id);
-		
+
 		if (!is_string($raw_data)) {
 			$raw_data = '{}';
 		}
-		
-		$json_decoded = json_decode($raw_data, true);
+
+		$json_decoded = self::decode($raw_data);
 
 		if ($format === 'html') {
 			$data = self::generate_pre($json_decoded);

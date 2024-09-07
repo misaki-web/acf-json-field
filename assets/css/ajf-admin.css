@@ -1,8 +1,9 @@
-.acf-json-field-data {
+.acf-json-field-data:not([data-editor-mode="none"]),
+.acf-json-field-editor[data-editor-mode="none"] {
 	display: none;
 }
 
-.acf-json-field-editor {
+.acf-json-field-editor:not([data-editor-mode="none"]) {
 	width: 100%;
 	height: 400px;
 	max-width: 1000px;
@@ -11,10 +12,10 @@
 	border: 1px solid #ccc;
 }
 
-.acf-json-field-editor .jse-tag {
+.acf-json-field-editor:not([data-editor-mode="none"]) .jse-tag {
 	color: #000 !important;
 }
 
-.acf-json-field-editor .jse-context-menu-button {
+.acf-json-field-editor:not([data-editor-mode="none"]) .jse-context-menu-button {
 	padding: 5px 10px !important;
 }

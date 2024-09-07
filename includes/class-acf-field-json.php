@@ -51,41 +51,43 @@ class acf_field_json extends \acf_field {
 		acf_render_field_setting(
 			$field,
 			[
-				'name'          => 'editor_mode',
-				'label'         => __('Editor Mode', 'acf-json-field'),
-				'type'          => 'select',
-				'choices'       => [
+				'name' => 'editor_mode',
+				'label' => __('Editor Mode', 'acf-json-field'),
+				'type' => 'select',
+				'choices' => [
+					'none' => 'none',
 					'table' => 'table',
-					'text'  => 'text',
-					'tree'  => 'tree',
+					'text' => 'text',
+					'tree' => 'tree',
 				],
-				'required'      => false,
+				'required' => false,
 				'default_value' => self::DEFAULT_EDITOR_MODE,
-				'hint'          => sprintf(__('Select the editor mode ("%s" by default)', 'acf-json-field'), self::DEFAULT_EDITOR_MODE),
+				'instructions' => sprintf(__('Select the editor mode ("%s" by default)', 'acf-json-field'), self::DEFAULT_EDITOR_MODE),
 			]
 		);
 		
 		acf_render_field_setting(
 			$field,
 			[
-				'name'          => 'editor_height',
-				'label'         => __('Editor Height', 'acf-json-field'),
-				'type'          => 'number',
-				'step'          => 1,
-				'min'           => 1,
-				'required'      => false,
+				'name' => 'editor_height',
+				'label' => __('Editor Height', 'acf-json-field'),
+				'type' => 'number',
+				'step' => 1,
+				'min' => 1,
+				'required' => false,
 				'default_value' => '',
-				'hint'          => __('Editor height (px) different from the default height defined in the stylesheet', 'acf-json-field'),
+				'instructions' => __('Editor height (px) different from the default height defined in the stylesheet. If the editor is disabled, the height will apply to the textarea.', 'acf-json-field'),
 			]
 		);
 		
 		acf_render_field_setting(
 			$field,
 			[
-				'label' =>        __('Default Value', 'acf-json-field'),
+				'name' => 'default_value',
+				'label' => __('Default Value', 'acf-json-field'),
+				'type' => 'textarea',
+				'required' => false,
 				'instructions' => __('Default JSON value if no value is entered by the user', 'acf-json-field'),
-				'type' =>         'textarea',
-				'name' =>         'default_value',
 			]
 		);
 	}
@@ -101,10 +103,12 @@ class acf_field_json extends \acf_field {
 		$textarea_name = isset($field['name']) ? esc_attr($field['name']) : '';
 		$field_value = isset($field['value']) ? $field['value'] : '';
 		
-		if (!is_string($field_value)) {
-			$field_value = JsonUtils::encode($field_value);
+		if (is_string($field_value)) {
+			# Decode the JSON string to ensure it can be re-encoded with consistent formatting.
+			$field_value = JsonUtils::decode($field_value);
 		}
 		
+		$field_value = JsonUtils::encode($field_value);
 		$textarea_value = esc_textarea($field_value);
 
 		if ($textarea_value === '' && isset($field['default_value'])) {
@@ -130,7 +134,7 @@ class acf_field_json extends \acf_field {
 
 		if ($textarea_id !== '' && $textarea_name !== '') {
 			echo <<<HTML
-				<textarea id="$textarea_id" class="acf-json-field-data" name="$textarea_name">$textarea_value</textarea>
+				<textarea id="$textarea_id" class="acf-json-field-data" name="$textarea_name" data-editor-mode="$editor_mode" {$style_attr}>$textarea_value</textarea>
 				<div id="$editor_id" class="acf-json-field-editor" data-editor-mode="$editor_mode" {$style_attr}></div>
 			HTML;
 		}

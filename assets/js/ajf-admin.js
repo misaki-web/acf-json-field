@@ -35,31 +35,35 @@ jQuery(document).ready(function ($) {
 		const $editor = $('#' + textarea_id + '-editor');
 		
 		if ($editor.length) {
-			const textarea_value = ajf_decode_html_entities($textarea.val().trim());
-			const json_data = ajf_str_to_json_data(textarea_value);
-			const content = {
-				text: undefined,
-				json: json_data.json
-			};
-
-			if (json_data.error) {
-				const error_msg = `ACF JSON Field: Invalid JSON format in \`textarea#${textarea_id}\`.`;
-				console.error(error_msg, json_data.error, 'Parsed value: ' + textarea_value);
-				wp.data.dispatch('core/notices').createNotice('error', error_msg, { isDismissible: true });
-			}
+			const editor_mode = $editor.attr('data-editor-mode');
 			
-			const json_editor = new JSONEditor({
-				target: $editor[0],
-				props: {
-					content,
-					mode: $editor.attr('data-editor-mode'),
-					askToFormat: false,
-					onChange: (updated_content) => {
-						const updated_content_with_text = toTextContent(updated_content);
-						$textarea.val(updated_content_with_text.text);
-					}
+			if (editor_mode != 'none') {
+				const textarea_value = ajf_decode_html_entities($textarea.val().trim());
+				const json_data = ajf_str_to_json_data(textarea_value);
+				const content = {
+					text: undefined,
+					json: json_data.json
+				};
+
+				if (json_data.error) {
+					const error_msg = `ACF JSON Field: Invalid JSON format in \`textarea#${textarea_id}\`.`;
+					console.error(error_msg, json_data.error, 'Parsed value: ' + textarea_value);
+					wp.data.dispatch('core/notices').createNotice('error', error_msg, { isDismissible: true });
 				}
-			});
+				
+				const json_editor = new JSONEditor({
+					target: $editor[0],
+					props: {
+						content,
+						mode: editor_mode,
+						askToFormat: false,
+						onChange: (updated_content) => {
+							const updated_content_with_text = toTextContent(updated_content);
+							$textarea.val(updated_content_with_text.text);
+						}
+					}
+				});
+			}
 		}
 	});
 });
