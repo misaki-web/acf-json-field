@@ -36,14 +36,16 @@ require_once(__DIR__ . '/includes/plugin-update-checker/plugin-update-checker.ph
 ########################################
 
 add_action('acf/input/admin_enqueue_scripts', function () {
-	$url_dir = plugin_dir_url(__FILE__);
+	if (is_admin()) { # Voir <https://github.com/AdvancedCustomFields/acf/issues/412>
+		$url_dir = plugin_dir_url(__FILE__);
 
-	wp_enqueue_style('acf-json-field-admin-css', $url_dir . 'assets/css/ajf-admin.css', [], ACF_JSON_FIELD_VERSION);
-	wp_enqueue_style('acf-json-field-css', $url_dir . 'assets/css/ajf.css', [], ACF_JSON_FIELD_VERSION);
+		wp_enqueue_style('acf-json-field-admin-css', $url_dir . 'assets/css/ajf-admin.css', [], ACF_JSON_FIELD_VERSION);
+		wp_enqueue_style('acf-json-field-css', $url_dir . 'assets/css/ajf.css', [], ACF_JSON_FIELD_VERSION);
 
-	wp_enqueue_script('acf-json-field-admin-js', $url_dir . 'assets/js/ajf-admin.js', ['jquery', 'acf-input'], ACF_JSON_FIELD_VERSION, true);
-	wp_register_script('acf-json-field-js', $url_dir . 'assets/js/ajf.js', ['jquery'], ACF_JSON_FIELD_VERSION);
-	wp_enqueue_script('acf-json-field-js');
+		wp_enqueue_script('acf-json-field-admin-js', $url_dir . 'assets/js/ajf-admin.js', ['jquery', 'acf-input'], ACF_JSON_FIELD_VERSION, true);
+		wp_register_script('acf-json-field-js', $url_dir . 'assets/js/ajf.js', ['jquery'], ACF_JSON_FIELD_VERSION);
+		wp_enqueue_script('acf-json-field-js');
+	}
 });
 
 add_filter('script_loader_tag', function ($tag, $handle, $src) {
