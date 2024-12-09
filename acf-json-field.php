@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 # @title Constants
 ################################################################################
 
-define('ACF_JSON_FIELD_VERSION', '1.0.8');
+define('ACF_JSON_FIELD_VERSION', '1.0.9');
 
 ################################################################################
 # @title Inclusions
