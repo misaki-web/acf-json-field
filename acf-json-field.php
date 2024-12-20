@@ -5,7 +5,7 @@
  * Description: A custom ACF field type for manipulating JSON data
  * Text Domain: acf-json-field
  * Author: Misaki F.
- * Version: 1.0.10
+ * Version: 1.0.11
  */
 
 namespace AcfJsonField;
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 # @title Constants
 ################################################################################
 
-define('ACF_JSON_FIELD_VERSION', '1.0.10');
+define('ACF_JSON_FIELD_VERSION', '1.0.11');
 
 ################################################################################
 # @title Inclusions

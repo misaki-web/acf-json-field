@@ -61,11 +61,11 @@ class JsonUtils {
 	 */
 	public static function decode($json_string) {
 		$json_decoded = json_decode($json_string, true);
-		
+
 		if (json_last_error() !== JSON_ERROR_NONE) {
 			$json_decoded = [];
 		}
-		
+
 		return $json_decoded;
 	}
 
@@ -170,7 +170,20 @@ class JsonUtils {
 			$ret = update_post_meta($id, $field, $json_encoded);
 		}
 
-		$success = !empty($ret);
+		if ($ret === false) {
+			$current_value = get_field($field, $id);
+
+			if ($add_slashes) {
+				$current_value = wp_slash($current_value);
+			}
+
+			if ($current_value === $json_encoded) {
+				# No failure since no change was needed
+				$ret = true;
+			}
+		}
+
+		$success = ($ret !== false);
 
 		return $success;
 	}
